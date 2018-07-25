@@ -123,7 +123,7 @@ class AppClient implements OmmProviderClient
 		
 		FieldList fieldList = EmaFactory.createFieldList();
 		//Add the Thomson Reuters REAL fields and custom REAL fields(negative field id) to the fieldList of the Refresh Message
-		//Create a REAL field by using FieldEntry.realFromDouble(java.lang.String name, double value, int magnitudeType) method
+		//Create a REAL field by using FieldEntry.realFromDouble(int fieldId, double value, int magnitudeType) method
 		fieldList.add(EmaFactory.createFieldEntry().realFromDouble(22, data.getBID(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
 		fieldList.add(EmaFactory.createFieldEntry().realFromDouble(25, data.getASK(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
 		fieldList.add(EmaFactory.createFieldEntry().realFromDouble(-4001, data.getBidAvgIntraDay(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
@@ -216,7 +216,7 @@ public class IProvider
 				//Generate new data of all fields for an Update Message
 				appClient.data.GenerateAllFields();
 				//Add the Thomson Reuters REAL fields and custom REAL fields(negative field id) to the fieldList of the Update Message
-				//Create a REAL field by using FieldEntry.realFromDouble(java.lang.String name, double value, int magnitudeType) method
+				//Create a REAL field by using FieldEntry.realFromDouble(int fieldId, double value, int magnitudeType) method
 				fieldList.add(EmaFactory.createFieldEntry().realFromDouble(22, appClient.data.getBID(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
 				fieldList.add(EmaFactory.createFieldEntry().realFromDouble(25, appClient.data.getASK(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
 				fieldList.add(EmaFactory.createFieldEntry().realFromDouble(-4001, appClient.data.getBidAvgIntraDay(), OmmReal.MagnitudeType.EXPONENT_NEG_2));

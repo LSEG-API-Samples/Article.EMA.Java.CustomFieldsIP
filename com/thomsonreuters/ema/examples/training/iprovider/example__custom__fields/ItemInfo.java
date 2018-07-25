@@ -37,52 +37,36 @@ public class ItemInfo {
     	rand=new Random();
     }
     
-    public double getBID() {
-    	return lastBid;
-    }
-    public double getASK() {
-    	return lastAsk;
-    }
-    public double getBidAvgIntraDay() {
-    	return bidAvgIntraDay;
-    }
-    public double getAskAvgIntraDay() {
-    	return askAvgIntraDay;
-    }
-   
     //The method generates new data of a field e.g.BID and ASK by adding increase to data 
-    public double newData(double data,double increase){
-    	//System.out.println("rawinc="+increase);//remove
+    private double newData(double data,double increase){
     	//Rounding the increase to 2 decimals e.g.0.7853612220729844 -> 0.79
     	increase = (BigDecimal.valueOf(increase)).setScale(2,RoundingMode.HALF_UP).doubleValue();
-        //System.out.println("increase="+ increase);//remove
     	double newData = data + increase;
-        //System.out.println("newData=" + newData);//remove
     	//Rounding new data to 2 decimals and return the rounded data
     	return (BigDecimal.valueOf(newData)).setScale(2,RoundingMode.HALF_UP).doubleValue();
     }
     //The method calculates the new average according to the last sum, new data and the number of data.
-    public AverageInfo newAverage(double sum,double data,double num) {
+    private AverageInfo newAverage(double sum,double data,double num) {
     	//Create an AverageInfo object to keep the new average's info which is the method's output.
     	AverageInfo aInfo = new AverageInfo();
-    	
     	//Calculate the new sum which is the last sum + new data
     	double rawSum = sum + data;
-    	//System.out.println("rawSum="+rawSum);//remove
     	//rounding the new sum to 2 decimals and set it in the AverageInfo object
     	aInfo.sum = (BigDecimal.valueOf(rawSum)).setScale(2,RoundingMode.HALF_UP).doubleValue();
-    	//System.out.println("Sum="+aInfo.sum);//remove
-    	
     	//Calculate the average by dividing new sum by the number of data
     	double rawAve = aInfo.sum/num;
-    	//System.out.println("rawAve="+rawAve);//remove
     	//Rounding the new average to 2 decimals and set it in the AverageInfo object
     	aInfo.average= (BigDecimal.valueOf(rawAve)).setScale(2,RoundingMode.HALF_UP).doubleValue();
-    	
     	//return the AverageInfo object consisting of the new sum and the new average
     	return aInfo;
     }
-    //The method generates new data of all fields which are BID, BID_AVG_INTRADAY, ASK, ASK_AVG_INTRADAY 
+    
+    //The method generates new data of all fields:
+    //Thomson Reuters fields - BID, ASK. In the real world, you can get them by subscribing an item from a feed.
+    //The custom fields - BID_AVG_INTRADAY, ASK, ASK_AVG_INTRADAY. In the real world, the custom fields may calculated from Thomson Reuters fields.  
+    //This method should be called when the provider wants to sends new data to the consumer. 
+    //In the real world, when the application receives new data(Thomson Reuters fields). Then,
+    //the custom fields based on these Thomson Reuters fields should be calculated and send to the consumer e.g.in an Update message
     public void GenerateAllFields() {
     	//Choose the increase value at random
     	//nextDouble() return double value between 0.0 and 1.0 e.g. 0.7853612220729844
@@ -90,18 +74,38 @@ public class ItemInfo {
     	//Increase the number of BID/ASK data to include new data
     	++numData;
     	
-    	//Generate new BID and BID_AVG_INTRADAY according to the last BID, random increase and number of data
+    	//Call newData(..) method which generates new dummy value of BID from last BID + increase value
     	lastBid = newData(lastBid,increase);
+    	//Calls newAverage(..) method which calculates new BID_AVG_INTRADAY value
+    	//from(the sum of BID values + new BID value)/the number of BIDs 
     	AverageInfo bidAveInfo = newAverage(sumBid,lastBid,numData);
     	bidAvgIntraDay = bidAveInfo.average;
     	sumBid = bidAveInfo.sum;
     	
-    	//Generate new ASK and ASK_AVG_INTRADAY according to the last ASK, random increase and number of data
-    	//In the real world, ASK is higher than BID. Hence, increase for ASK should higher than BID
+    	//Call newData(..) method which generates new dummy value of ASK from last ASK + increase value
+    	//In the real world, ASK is higher than BID so increase value is increase+0.01
     	lastAsk = newData(lastAsk,increase+0.01);
+    	//Calls newAverage(..) method which calculates new ASK_AVG_INTRADAY value
+    	//from(the sum of ASK values + new ASK value)/the number of ASKs 
     	AverageInfo askAveInfo = newAverage(sumAsk,lastAsk,numData);
     	askAvgIntraDay = askAveInfo.average;
     	sumAsk = askAveInfo.sum;
+    }
+    //The method which allows other classes to get BID value 
+    public double getBID() {
+    	return lastBid;
+    }
+    //The method which allows other classes to get ASK value
+    public double getASK() {
+    	return lastAsk;
+    }
+    //The method which allows other classes to get BID_AVG_INTRADAY value
+    public double getBidAvgIntraDay() {
+    	return bidAvgIntraDay;
+    }
+   //The method which allows other classes to get ASK_AVG_INTRADAY value
+    public double getAskAvgIntraDay() {
+    	return askAvgIntraDay;
     }
     //The utility sub class to keep average's info   
     class AverageInfo {

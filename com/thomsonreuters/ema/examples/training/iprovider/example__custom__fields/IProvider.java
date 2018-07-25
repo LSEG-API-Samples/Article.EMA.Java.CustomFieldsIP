@@ -38,19 +38,6 @@ class AppClient implements OmmProviderClient
 	//the source of canned data for the provider
 	public ItemInfo data;
 	
-	//To set the value for a REAL field, numeric value and decimal are required.
-	//This provider application publishes 2 decimals so just find out the numeric value
-	//The method is to convert double e.g. BID to numeric value(long type) e.g. 32.45 -> 3245, 32.4 -> 3240
-	public long convertDouble2NumericValue(double dVal) {
-		String[] sval=Double.toString(dVal).split("\\.");
-		//sval[0] is numeric value before decimal, sval[1] is number after decimal
-		StringBuffer realStr = new StringBuffer(sval[0]+sval[1]);
-		//Some cases sval[1] is only 1 decimal e.g. 32.4 , pad zero at the end to have 2 decimals
-		if(sval[1].length()==1)
-			realStr.append("0");
-		//Return the numeric value converted from String
-		return Long.parseLong(realStr.toString());
-	}
 	AppClient(String[] args)
 	{
 		int idx = 0;
@@ -135,14 +122,12 @@ class AppClient implements OmmProviderClient
 		}
 		
 		FieldList fieldList = EmaFactory.createFieldList();
-		//Add the REAL fields and custom REAL fields(negative field id) to the fieldList of the Refresh Message
-		//Create a REAL field by using FieldEntry.real(int fieldId, long mantissa, int magnitudeType) method
-		//Use convertDouble2NumericValue(double dVal) to convert double generated from canned data(data variable) to long(mantissa parameter) 
-		//magnitudeType parameter always is OmmReal.MagnitudeType.EXPONENT_NEG_2 which power of -2 or 2 decimals.
-		fieldList.add(EmaFactory.createFieldEntry().real(22, convertDouble2NumericValue(data.getBID()), OmmReal.MagnitudeType.EXPONENT_NEG_2));
-		fieldList.add(EmaFactory.createFieldEntry().real(25, convertDouble2NumericValue(data.getASK()), OmmReal.MagnitudeType.EXPONENT_NEG_2));
-		fieldList.add(EmaFactory.createFieldEntry().real(-4001, convertDouble2NumericValue(data.getBidAvgIntraDay()), OmmReal.MagnitudeType.EXPONENT_NEG_2));
-		fieldList.add(EmaFactory.createFieldEntry().real(-4002, convertDouble2NumericValue(data.getAskAvgIntraDay()), OmmReal.MagnitudeType.EXPONENT_NEG_2));
+		//Add the Thomson Reuters REAL fields and custom REAL fields(negative field id) to the fieldList of the Refresh Message
+		//Create a REAL field by using FieldEntry.realFromDouble(java.lang.String name, double value, int magnitudeType) method
+		fieldList.add(EmaFactory.createFieldEntry().realFromDouble(22, data.getBID(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
+		fieldList.add(EmaFactory.createFieldEntry().realFromDouble(25, data.getASK(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
+		fieldList.add(EmaFactory.createFieldEntry().realFromDouble(-4001, data.getBidAvgIntraDay(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
+		fieldList.add(EmaFactory.createFieldEntry().realFromDouble(-4001, data.getAskAvgIntraDay(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
 		
 		
 		event.provider().submit(EmaFactory.createRefreshMsg().serviceName(reqMsg.serviceName()).name(reqMsg.name()).
@@ -230,15 +215,13 @@ public class IProvider
 				fieldList.clear();
 				//Generate new data of all fields for an Update Message
 				appClient.data.GenerateAllFields();
-				//Add the REAL fields and custom REAL fields(negative field id) to the fieldList of the Update Message
-				//Create a REAL field by using FieldEntry.real(int fieldId, long mantissa, int magnitudeType) method
-				//Use convertDouble2NumericValue(double dVal) to convert double generated from canned data(data variable) to long(mantissa parameter) 
-				//magnitudeType parameter always is OmmReal.MagnitudeType.EXPONENT_NEG_2 which power of -2 or 2 decimals.
-				fieldList.add(EmaFactory.createFieldEntry().real(22, appClient.convertDouble2NumericValue(appClient.data.getBID()), OmmReal.MagnitudeType.EXPONENT_NEG_2));
-				fieldList.add(EmaFactory.createFieldEntry().real(25, appClient.convertDouble2NumericValue(appClient.data.getASK()), OmmReal.MagnitudeType.EXPONENT_NEG_2));
-				fieldList.add(EmaFactory.createFieldEntry().real(-4001, appClient.convertDouble2NumericValue(appClient.data.getBidAvgIntraDay()), OmmReal.MagnitudeType.EXPONENT_NEG_2));
-				fieldList.add(EmaFactory.createFieldEntry().real(-4002, appClient.convertDouble2NumericValue(appClient.data.getAskAvgIntraDay()), OmmReal.MagnitudeType.EXPONENT_NEG_2));
-			
+				//Add the Thomson Reuters REAL fields and custom REAL fields(negative field id) to the fieldList of the Update Message
+				//Create a REAL field by using FieldEntry.realFromDouble(java.lang.String name, double value, int magnitudeType) method
+				fieldList.add(EmaFactory.createFieldEntry().realFromDouble(22, appClient.data.getBID(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
+				fieldList.add(EmaFactory.createFieldEntry().realFromDouble(25, appClient.data.getASK(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
+				fieldList.add(EmaFactory.createFieldEntry().realFromDouble(-4001, appClient.data.getBidAvgIntraDay(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
+				fieldList.add(EmaFactory.createFieldEntry().realFromDouble(-4001, appClient.data.getAskAvgIntraDay(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
+				
 				provider.submit(updateMsg.clear().payload(fieldList), appClient.itemHandle );
 				
 				Thread.sleep(1000);

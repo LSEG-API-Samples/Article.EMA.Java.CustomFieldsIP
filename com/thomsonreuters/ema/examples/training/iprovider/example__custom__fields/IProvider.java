@@ -127,7 +127,7 @@ class AppClient implements OmmProviderClient
 		fieldList.add(EmaFactory.createFieldEntry().realFromDouble(22, data.getBID(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
 		fieldList.add(EmaFactory.createFieldEntry().realFromDouble(25, data.getASK(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
 		fieldList.add(EmaFactory.createFieldEntry().realFromDouble(-4001, data.getBidAvgIntraDay(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
-		fieldList.add(EmaFactory.createFieldEntry().realFromDouble(-4001, data.getAskAvgIntraDay(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
+		fieldList.add(EmaFactory.createFieldEntry().realFromDouble(-4002, data.getAskAvgIntraDay(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
 		
 		
 		event.provider().submit(EmaFactory.createRefreshMsg().serviceName(reqMsg.serviceName()).name(reqMsg.name()).
@@ -203,10 +203,10 @@ public class IProvider
 			while( appClient.loginHandle == 0 ) Thread.sleep(1000);
 			
 			long rwfFld = provider.registerClient(EmaFactory.createReqMsg().name("RWFFld").filter(EmaRdm.DICTIONARY_NORMAL)
-					.serviceName("DIRECT_FEED").domainType(EmaRdm.MMT_DICTIONARY), appClient);
+					.serviceName("INTERNAL_FEED").domainType(EmaRdm.MMT_DICTIONARY), appClient);
 			
 			long rwfEnum = provider.registerClient(EmaFactory.createReqMsg().name("RWFEnum").filter(EmaRdm.DICTIONARY_NORMAL)
-					.serviceName("DIRECT_FEED").domainType(EmaRdm.MMT_DICTIONARY), appClient);
+					.serviceName("INTERNAL_FEED").domainType(EmaRdm.MMT_DICTIONARY), appClient);
 			
 			while ( appClient.itemHandle == 0 ) Thread.sleep(1000);
 			
@@ -220,7 +220,7 @@ public class IProvider
 				fieldList.add(EmaFactory.createFieldEntry().realFromDouble(22, appClient.data.getBID(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
 				fieldList.add(EmaFactory.createFieldEntry().realFromDouble(25, appClient.data.getASK(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
 				fieldList.add(EmaFactory.createFieldEntry().realFromDouble(-4001, appClient.data.getBidAvgIntraDay(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
-				fieldList.add(EmaFactory.createFieldEntry().realFromDouble(-4001, appClient.data.getAskAvgIntraDay(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
+				fieldList.add(EmaFactory.createFieldEntry().realFromDouble(-4002, appClient.data.getAskAvgIntraDay(), OmmReal.MagnitudeType.EXPONENT_NEG_2));
 				
 				provider.submit(updateMsg.clear().payload(fieldList), appClient.itemHandle );
 				

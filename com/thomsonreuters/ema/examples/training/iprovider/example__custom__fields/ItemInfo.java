@@ -63,10 +63,10 @@ public class ItemInfo {
     
     //The method generates new data of all fields:
     //Thomson Reuters fields - BID, ASK. In the real world, you can get them by subscribing an item from a feed.
-    //The custom fields - BID_AVG_INTRADAY, ASK, ASK_AVG_INTRADAY. In the real world, the custom fields may calculated from Thomson Reuters fields.  
+    //The custom fields - BID_AVG_INTRADAY, ASK_AVG_INTRADAY. In the real world, the custom fields may be calculated from Thomson Reuters fields.  
     //This method should be called when the provider wants to sends new data to the consumer. 
-    //In the real world, when the application receives new data(Thomson Reuters fields). Then,
-    //the custom fields based on these Thomson Reuters fields should be calculated and send to the consumer e.g.in an Update message
+    //In the real world, when the application receives new data (Thomson Reuters fields). Then,
+    //the custom fields based on these Thomson Reuters fields should be calculated and sent to the consumer e.g.in an Update message
     public void GenerateAllFields() {
     	//Choose the increase value at random
     	//nextDouble() return double value between 0.0 and 1.0 e.g. 0.7853612220729844
@@ -74,7 +74,7 @@ public class ItemInfo {
     	//Increase the number of BID/ASK data to include new data
     	++numData;
     	
-    	//Call newData(..) method which generates new dummy value of BID from last BID + increase value
+    	//Call the newData(..) method which generates new dummy value of BID from last BID + increase value
     	lastBid = newData(lastBid,increase);
     	//Calls newAverage(..) method which calculates new BID_AVG_INTRADAY value
     	//from(the sum of BID values + new BID value)/the number of BIDs 

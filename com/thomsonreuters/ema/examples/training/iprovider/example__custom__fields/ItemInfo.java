@@ -62,11 +62,11 @@ public class ItemInfo {
     }
     
     //The method generates new data of all fields:
-    //Thomson Reuters fields - BID, ASK. In the real world, you can get them by subscribing an item from a feed.
-    //The custom fields - BID_AVG_INTRADAY, ASK_AVG_INTRADAY. In the real world, the custom fields may be calculated from Thomson Reuters fields.  
+    //Refinitiv fields - BID, ASK. In the real world, you can get them by subscribing an item from a feed.
+    //The custom fields - BID_AVG_INTRADAY, ASK_AVG_INTRADAY. In the real world, the custom fields may be calculated from Refinitiv fields.  
     //This method should be called when the provider wants to sends new data to the consumer. 
-    //In the real world, when the application receives new data (Thomson Reuters fields). Then,
-    //the custom fields based on these Thomson Reuters fields should be calculated and sent to the consumer e.g.in an Update message
+    //In the real world, when the application receives new data (Refinitiv fields). Then,
+    //the custom fields based on these Refinitiv fields should be calculated and sent to the consumer e.g.in an Update message
     public void GenerateAllFields() {
     	//Choose the increase value at random
     	//nextDouble() return double value between 0.0 and 1.0 e.g. 0.7853612220729844

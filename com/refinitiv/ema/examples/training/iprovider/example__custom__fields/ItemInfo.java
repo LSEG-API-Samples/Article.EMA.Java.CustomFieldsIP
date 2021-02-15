@@ -1,4 +1,4 @@
-package com.thomsonreuters.ema.examples.training.iprovider.example__custom__fields;
+package com.refinitiv.ema.examples.training.iprovider.example__custom__fields;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

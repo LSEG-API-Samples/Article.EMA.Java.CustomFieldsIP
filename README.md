@@ -1,2 +1,2 @@
 # Article.EMA.Java.CustomFieldsIP
-Created by Platform Services GitHub tool on Mon Jul 23 2018
+https://developers.refinitiv.com/en/article-catalog/article/publish-custom-data-trep-ema
